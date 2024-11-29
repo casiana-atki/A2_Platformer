@@ -7,18 +7,16 @@ public class PlayerController : MonoBehaviour
         left, right
     }
 
+    //Journal 7 - Task 1 Variables
     public float moveSpeed = 5f; // Public variable for movement speed
     private Rigidbody2D rb;      // Reference to Rigidbody2D
-
     private FacingDirection currentFacingDirection = FacingDirection.right;
 
-    // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         // The input from the player needs to be determined and
@@ -29,7 +27,7 @@ public class PlayerController : MonoBehaviour
     }
 
     private void MovementUpdate(Vector2 playerInput)
-    {
+    {//J7|T1 - Basic Movement
         rb.velocity = new Vector2(playerInput.x * moveSpeed, rb.velocity.y);
         if (playerInput.x > 0)
         {
@@ -40,6 +38,7 @@ public class PlayerController : MonoBehaviour
             currentFacingDirection = FacingDirection.left;
         }
 
+        //J7|T2 - Animation Updates
         if (currentFacingDirection == FacingDirection.right)
         {
             transform.localScale = new Vector3(1, 1, 1);
@@ -50,6 +49,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    //J7|T2 - Animation Updates
     public bool IsWalking()
     {
         return Mathf.Abs(rb.velocity.x) > 0.1f;
@@ -59,6 +59,7 @@ public class PlayerController : MonoBehaviour
         return false;
     }
 
+    //J7|T2 - Animation Updates 
     public FacingDirection GetFacingDirection()
     {
         return currentFacingDirection;
