@@ -11,10 +11,12 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed = 5f; // Public variable for movement speed
     private Rigidbody2D rb;      // Reference to Rigidbody2D
     private FacingDirection currentFacingDirection = FacingDirection.right;
+    private SpriteRenderer spriteRenderer;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
     }
 
     void Update()
@@ -39,13 +41,9 @@ public class PlayerController : MonoBehaviour
         }
 
         //J7|T2 - Animation Updates
-        if (currentFacingDirection == FacingDirection.right)
+        if (spriteRenderer != null)
         {
-            transform.localScale = new Vector3(1, 1, 1);
-        }
-        else
-        {
-            transform.localScale = new Vector3(-1, 1, 1);
+            spriteRenderer.flipX = (currentFacingDirection == FacingDirection.left);
         }
     }
 

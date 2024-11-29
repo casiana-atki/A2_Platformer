@@ -1827,7 +1827,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 1433354313}
-  bodyRenderer: {fileID: 0}
+  bodyRenderer: {fileID: 1433354316}
   playerController: {fileID: 1433354314}
 --- !u!1 &2077868377
 GameObject:
