@@ -7,11 +7,13 @@ public class PlayerController : MonoBehaviour
         left, right
     }
 
-    //Journal 7 - Task 1 Variables
+    //Journal 7 - Variables
     public float moveSpeed = 5f; // Public variable for movement speed
+    public float jumpForce = 6f;
     private Rigidbody2D rb;      // Reference to Rigidbody2D
     private FacingDirection currentFacingDirection = FacingDirection.right;
     private SpriteRenderer spriteRenderer;
+    private bool isGrounded = false;
 
     void Start()
     {
@@ -26,6 +28,11 @@ public class PlayerController : MonoBehaviour
         // manage the actual movement of the character.
         Vector2 playerInput = new Vector2(Input.GetAxis("Horizontal"), 0f);
         MovementUpdate(playerInput);
+
+        if (Input.GetButtonDown("Jump") && IsGrounded())  
+        {
+            Jump();
+        }
     }
 
     private void MovementUpdate(Vector2 playerInput)
@@ -47,14 +54,38 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    //J7:T3 - Groundedness
+    private void Jump()
+    {
+        rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+    }
+
+    void OnCollisionStay2D(Collision2D other)
+    {
+        if (other.gameObject.CompareTag("Ground")) 
+        {
+            isGrounded = true; 
+        }
+    }
+
+    void OnCollisionExit2D(Collision2D other)
+    {
+        if (other.gameObject.CompareTag("Ground")) 
+        {
+            isGrounded = false; 
+        }
+    }
+
     //J7|T2 - Animation Updates
     public bool IsWalking()
     {
         return Mathf.Abs(rb.velocity.x) > 0.1f;
     }
+    
+    //Updated for J7|T3 - Groundedness
     public bool IsGrounded()
     {
-        return false;
+        return isGrounded;
     }
 
     //J7|T2 - Animation Updates 
