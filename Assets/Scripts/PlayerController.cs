@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class PlayerController : MonoBehaviour
 {
@@ -7,22 +8,30 @@ public class PlayerController : MonoBehaviour
         left, right
     }
 
-    //Journal 7 - Variables
+    //Journal 6 - Variables
     public float moveSpeed = 5f; // Public variable for movement speed
     public float jumpForce = 6f;
-    private Rigidbody2D rb;      // Reference to Rigidbody2D
+    private Rigidbody2D rb;
     private FacingDirection currentFacingDirection = FacingDirection.right;
     private SpriteRenderer spriteRenderer;
     private bool isGrounded = false;
 
+    //Journal 7 Variables
+    public float apexHeight = 0.65f; // Max jump height
+    public float apexTime = 0.4f; // Time to reach the apex
+    private float originalGravityScale; // Store the original gravity scale
+
     void Start()
     {
+        
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        originalGravityScale = rb.gravityScale; 
     }
 
     void Update()
     {
+        rb.freezeRotation = true;
         // The input from the player needs to be determined and
         // then passed in the to the MovementUpdate which should
         // manage the actual movement of the character.
@@ -36,7 +45,7 @@ public class PlayerController : MonoBehaviour
     }
 
     private void MovementUpdate(Vector2 playerInput)
-    {//J7|T1 - Basic Movement
+    {//J6|T1 - Basic Movement
         rb.velocity = new Vector2(playerInput.x * moveSpeed, rb.velocity.y);
         if (playerInput.x > 0)
         {
@@ -47,17 +56,27 @@ public class PlayerController : MonoBehaviour
             currentFacingDirection = FacingDirection.left;
         }
 
-        //J7|T2 - Animation Updates
+        //J6|T2 - Animation Updates
         if (spriteRenderer != null)
         {
             spriteRenderer.flipX = (currentFacingDirection == FacingDirection.left);
         }
     }
 
-    //J7:T3 - Groundedness
+    //J7:T1 - Dynamic Jumping
     private void Jump()
     {
-        rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+        float initialJumpVelocity = Mathf.Sqrt(2 * apexHeight * originalGravityScale * 10f / rb.gravityScale);
+        rb.velocity = new Vector2(rb.velocity.x, initialJumpVelocity);
+        rb.gravityScale = originalGravityScale * 0.5f;
+        StartCoroutine(RestoreGravity());
+    }
+
+    //J7:T1 - Dynamic Jumping
+    private IEnumerator RestoreGravity()
+    {
+        yield return new WaitForSeconds(apexTime);
+        rb.gravityScale = originalGravityScale; 
     }
 
     void OnCollisionStay2D(Collision2D other)
@@ -76,19 +95,19 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    //J7|T2 - Animation Updates
+    //J6|T2 - Animation Updates
     public bool IsWalking()
     {
         return Mathf.Abs(rb.velocity.x) > 0.1f;
     }
     
-    //Updated for J7|T3 - Groundedness
+    //Updated for J6|T3 - Groundedness
     public bool IsGrounded()
     {
         return isGrounded;
     }
 
-    //J7|T2 - Animation Updates 
+    //J6|T2 - Animation Updates 
     public FacingDirection GetFacingDirection()
     {
         return currentFacingDirection;
