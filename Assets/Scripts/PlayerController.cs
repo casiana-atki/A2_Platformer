@@ -16,10 +16,12 @@ public class PlayerController : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private bool isGrounded = false;
 
-    //Journal 7 Variables
+    //J7|T1 Variables
     public float apexHeight = 0.65f; // Max jump height
     public float apexTime = 0.4f; // Time to reach the apex
     private float originalGravityScale; // Store the original gravity scale
+    //J7|T2 Variables
+    public float terminalSpeed = -10f;
 
     void Start()
     {
@@ -45,8 +47,14 @@ public class PlayerController : MonoBehaviour
     }
 
     private void MovementUpdate(Vector2 playerInput)
-    {//J6|T1 - Basic Movement
+    {//J6|T1 - Basic Movement & J7|T2
         rb.velocity = new Vector2(playerInput.x * moveSpeed, rb.velocity.y);
+
+        if (rb.velocity.y < terminalSpeed)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, terminalSpeed);
+        }
+
         if (playerInput.x > 0)
         {
             currentFacingDirection = FacingDirection.right;
@@ -55,6 +63,8 @@ public class PlayerController : MonoBehaviour
         {
             currentFacingDirection = FacingDirection.left;
         }
+
+        Debug.Log("Velocity: " + rb.velocity);
 
         //J6|T2 - Animation Updates
         if (spriteRenderer != null)
