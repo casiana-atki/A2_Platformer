@@ -22,6 +22,9 @@ public class PlayerController : MonoBehaviour
     private float originalGravityScale; // Store the original gravity scale
     //J7|T2 Variables
     public float terminalSpeed = -10f;
+    //J7|T3 Variables
+    public float coyoteTime = 0.2f; 
+    private float coyoteTimeCounter = 0f;
 
     void Start()
     {
@@ -40,7 +43,16 @@ public class PlayerController : MonoBehaviour
         Vector2 playerInput = new Vector2(Input.GetAxis("Horizontal"), 0f);
         MovementUpdate(playerInput);
 
-        if (Input.GetButtonDown("Jump") && IsGrounded())  
+        if (IsGrounded())
+        {
+            coyoteTimeCounter = coyoteTime;
+        }
+        else
+        {
+            coyoteTimeCounter -= Time.deltaTime; 
+        }
+
+        if (Input.GetButtonDown("Jump") && coyoteTimeCounter > 0f)
         {
             Jump();
         }
