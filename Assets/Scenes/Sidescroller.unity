@@ -1642,6 +1642,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 5
   jumpForce: 10
+  apexHeight: 0.65
+  apexTime: 0.4
+  terminalSpeed: -10
+  coyoteTime: 0.2
 --- !u!4 &1433354315
 Transform:
   m_ObjectHideFlags: 0
@@ -1709,7 +1713,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
+  m_SpriteSortPoint: 1
 --- !u!61 &1433354317
 BoxCollider2D:
   m_ObjectHideFlags: 0
