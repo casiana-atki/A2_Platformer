@@ -25,6 +25,8 @@ public class PlayerController : MonoBehaviour
     //J7|T3 Variables
     public float coyoteTime = 0.2f; 
     private float coyoteTimeCounter = 0f;
+    //A2|T1 Variable
+    private bool isOnDirt = false;
 
     void Start()
     {
@@ -60,7 +62,9 @@ public class PlayerController : MonoBehaviour
 
     private void MovementUpdate(Vector2 playerInput)
     {//J6|T1 - Basic Movement & J7|T2
-        rb.velocity = new Vector2(playerInput.x * moveSpeed, rb.velocity.y);
+
+        float currentMoveSpeed = isOnDirt ? moveSpeed / 2f : moveSpeed; //For A2|T1 Movement speed is halved depending on whether or not the player is on the dirt. When true, player speed is halved so they walk slower.
+        rb.velocity = new Vector2(playerInput.x * currentMoveSpeed, rb.velocity.y);
 
         if (rb.velocity.y < terminalSpeed)
         {
@@ -76,6 +80,7 @@ public class PlayerController : MonoBehaviour
             currentFacingDirection = FacingDirection.left;
         }
 
+        //Commented this out to save my console from being spammed. Feel free to uncomment it to check the velocity. 
         Debug.Log("Velocity: " + rb.velocity);
 
         //J6|T2 - Animation Updates
@@ -103,17 +108,32 @@ public class PlayerController : MonoBehaviour
 
     void OnCollisionStay2D(Collision2D other)
     {
-        if (other.gameObject.CompareTag("Ground")) 
+        if (other.gameObject.CompareTag("Ground") || other.gameObject.CompareTag("Dirt"))
         {
-            isGrounded = true; 
+            isGrounded = true;
+
+            if (other.gameObject.CompareTag("Dirt"))
+            {
+                isOnDirt = true; //Player is touching the dirt
+                //Debug.Log("Dirt is touched. Watch out for worms!");
+            }
+
+            else
+            {
+                isOnDirt = false; //Player is not touching the dirt. 
+            }
         }
     }
 
     void OnCollisionExit2D(Collision2D other)
     {
-        if (other.gameObject.CompareTag("Ground")) 
+        if (other.gameObject.CompareTag("Ground") || other.gameObject.CompareTag("Dirt"))
         {
             isGrounded = false; 
+        }
+        if (other.gameObject.CompareTag("Dirt"))
+        {
+            isOnDirt = false; //Player has left the dirt & is no longer on it. 
         }
     }
 
