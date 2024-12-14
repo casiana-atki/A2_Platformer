@@ -27,10 +27,14 @@ public class PlayerController : MonoBehaviour
     private float coyoteTimeCounter = 0f;
     //A2|T1 Variable
     private bool isOnDirt = false;
+    //A2|T2 Variables
+    public float dashMultiplier = 2f; 
+    public float dashDuration = 0.3f; 
+    public float dashCooldown = 5f; 
+    private bool canDash = true; 
 
     void Start()
     {
-        
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         originalGravityScale = rb.gravityScale; 
@@ -58,6 +62,28 @@ public class PlayerController : MonoBehaviour
         {
             Jump();
         }
+
+        //A2|T2 - Dash 
+        if (Input.GetKeyDown(KeyCode.E) && canDash)
+        {
+            StartCoroutine(Dash());
+        }
+    }
+
+    //A2|T2 Dash Coroutine 
+    private IEnumerator Dash()
+    {
+        canDash = false; //Make it so the player is currently dashing & cannot dash again until the cooldown is over. 
+
+        float originalMoveSpeed = moveSpeed; 
+        moveSpeed *= dashMultiplier; //Multiply the movespeed by the multipler so the player is going 3 times as fast. 
+
+        yield return new WaitForSeconds(dashDuration); //Really low value since it should be a quick dash. 
+
+        moveSpeed = originalMoveSpeed; //Return the movespeed to the original movespeed 
+
+        yield return new WaitForSeconds(dashCooldown);  //Player must wait 5 seconds before they can dash again. 
+        canDash = true; 
     }
 
     private void MovementUpdate(Vector2 playerInput)
@@ -81,7 +107,7 @@ public class PlayerController : MonoBehaviour
         }
 
         //Commented this out to save my console from being spammed. Feel free to uncomment it to check the velocity. 
-        Debug.Log("Velocity: " + rb.velocity);
+        //Debug.Log("Velocity: " + rb.velocity);
 
         //J6|T2 - Animation Updates
         if (spriteRenderer != null)
