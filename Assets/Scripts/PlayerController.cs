@@ -31,7 +31,10 @@ public class PlayerController : MonoBehaviour
     public float dashMultiplier = 2f; 
     public float dashDuration = 0.3f; 
     public float dashCooldown = 5f; 
-    private bool canDash = true; 
+    private bool canDash = true;
+    //A2|T3 Variables
+    public float doubleJumpForce = 10f;
+    private bool canDoubleJump = false;
 
     void Start()
     {
@@ -52,15 +55,23 @@ public class PlayerController : MonoBehaviour
         if (IsGrounded())
         {
             coyoteTimeCounter = coyoteTime;
+            canDoubleJump = true; 
         }
         else
         {
-            coyoteTimeCounter -= Time.deltaTime; 
+            coyoteTimeCounter -= Time.deltaTime;
         }
 
+        //Accounts for the normal jump 
         if (Input.GetButtonDown("Jump") && coyoteTimeCounter > 0f)
         {
-            Jump();
+            Jump(); 
+        }
+
+        //A2|T3: Double Jump 
+        if (Input.GetKeyDown(KeyCode.Q) && canDoubleJump && !IsGrounded())
+        {
+            DoubleJump();
         }
 
         //A2|T2 - Dash 
@@ -179,5 +190,25 @@ public class PlayerController : MonoBehaviour
     public FacingDirection GetFacingDirection()
     {
         return currentFacingDirection;
+    }
+
+    //A2|T3 Double Jump
+    private void DoubleJump()
+    {
+           if (canDoubleJump)
+        {
+            //Stores the current player velocity
+            Vector2 currentVelocity = rb.velocity;
+
+            //Creates a new velocity vector, keeping the same horizontal but adjusting the vertical component (the Y) for the double jump. 
+            Vector2 newVelocity = new Vector2(currentVelocity.x, currentVelocity.y * doubleJumpForce);
+
+            //Applies to velocity to the rigidbody2D
+            rb.velocity = newVelocity;
+
+            Debug.Log("Double Jump Activated!");
+
+            canDoubleJump = false;
+        }
     }
 }
